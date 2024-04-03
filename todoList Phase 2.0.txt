@@ -1,0 +1,3 @@
+1. create a staff CURD options 
+
+2. All people who can login can see all thing ( Staff Can see All the patient and Doctor Details ) 

@@ -1,0 +1,37 @@
+.labelfont {
+    font-size: 110%;
+    font-weight: 500;
+    padding-left: 2%;
+    padding-top: 2%;
+  }
+  
+  .labelfontP {
+      font-size: 110%;
+      font-weight: 500;
+      padding-left: 3%;
+      padding-top:7%;
+      
+  
+    }
+  
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 999;
+  }
+  
+  .modaltitle {
+    padding-left: 33%;
+  }
+  
+  .modaltitleP {
+      padding-left: 20%;
+    }
+    
+  
+  .controlBtn {
+    text-align: center;
+    padding: 5%;
+  }
+  

@@ -1,0 +1,80 @@
+/* styles.css */
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin-top: 5%;
+    margin-left: 2%;
+  }
+  
+  
+  
+  .searchBar{
+  
+    margin-top: 3%;
+    margin-left: 25%;
+    margin-bottom: -2%;
+  
+    /* border: 1px solid rgb(0, 0, 0); */
+   
+    padding: 1%;
+    background-color: #edeef3;
+    width: 50%;
+  }
+  
+  .data {
+    border: 1px solid #000000; /* Border color */
+    text-align: center;
+    font-size: 20px;
+    padding: 5px;
+  }
+  
+  th {
+    background-color: #3482db; /* Header background color */
+    color: #ffffff; /* Header text color */
+  }
+  
+  tr:nth-child(even) {
+    background-color: #d3d1d1;
+  }
+  
+  /* Optional: Hover effect */
+  tr:hover {
+    background-color: #ee9b02; /* Light blue on hover */
+    color: white;
+    font-weight: 600;
+    
+  }
+  
+  
+  @media (max-width: 767px) {
+   
+    table {
+      width: 95%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      margin-left: 1%;
+    }
+    .data {
+      border: 1px solid #000000; /* Border color */
+      text-align: center;
+      font-size: 16px;
+      padding: 5px;
+    }
+  
+    .searchBar{
+  
+      margin-top: 10%;
+      margin-left: 2%;
+      
+      margin-bottom: -2%;
+    
+      /* border: 1px solid rgb(0, 0, 0); */
+     
+      padding: 1%;
+      padding-top: 5%;
+      background-color: #edeef3;
+      width: 98%;
+    }
+  
+  }

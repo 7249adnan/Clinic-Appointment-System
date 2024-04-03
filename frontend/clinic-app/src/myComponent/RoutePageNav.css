@@ -1,0 +1,57 @@
+/* .navMain{
+    position: sticky !important;
+    z-index: 1000 !important;
+    top: 0 !important;
+  width: 100% !important;
+} */
+
+.navBar1{
+
+    font-size: 200%;
+   font-weight: 500;
+}
+
+
+
+.navLogo1{
+    width: 5%;
+    height: auto;
+   
+}
+
+.navIcon{
+    
+    font-size: 140%;
+}
+
+.navBarHead1{
+    font-size: 130%;
+    font-weight: 600;   
+}
+
+.navItems{
+    font-size: 140%;
+    font-weight: 600;   
+    color: rgb(253, 205, 48);
+}
+
+.logUserName{
+    color: rgb(255, 255, 255);  
+    font-weight: 600;
+    font-size: 140%;
+    padding-right: 2%;
+}
+
+@media (max-width: 767px) {
+
+    .navIcon{
+    
+        font-size: 120%;
+    }
+
+    .navBarHead1{
+        font-size: 100%;
+        font-weight: 500;   
+    }
+    
+}

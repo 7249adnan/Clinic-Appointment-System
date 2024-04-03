@@ -1,0 +1,43 @@
+.showForm{
+
+    border: 6px solid rgb(59, 125, 247);
+    border-radius: 20px;
+   
+    /* background-color: rgb(241, 240, 240); */
+    margin-top: 3%;
+    padding: 2% !important;   
+    padding-left: 1% !important;
+    width: 100% !important ; 
+  
+    margin-bottom: 10% !important;  
+    padding-bottom: 5% !important;
+
+    
+
+}
+.tableA {
+    width: 98%;
+    border-collapse: collapse;
+    border: 2px solid #000000;
+    margin-top: 1%;
+    margin-left: 1%;
+    height: 100px !important;
+    overflow: auto !important ;
+    margin-bottom: 1% !important ;
+  }
+  
+  .data {
+    border: 1px solid #000000; /* Border color */
+    text-align: center;
+    font-weight: 500;
+    font-size: 17px;
+    padding: 5px;
+  }
+  
+  .paggingButton{
+    font-weight: 500;
+    text-align: left;
+    
+    
+  }
+ 

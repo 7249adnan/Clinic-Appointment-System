@@ -1,0 +1,64 @@
+.navBar{
+
+    font-size: 200%;
+   font-weight: 500;
+}
+
+.logForms{
+
+width: 30%;
+margin-left: 37%;
+margin-top: 10%;
+border: 13px solid rgb(0, 102, 255);
+padding: 1%;
+padding-top: 1%;
+text-align: left;
+
+}
+
+.logHead{
+
+    font-size: 180%;
+    font-weight: 600;
+    padding-bottom: 5%;
+    align-items:center;
+}
+.navLogo{
+    width: 5%;
+    height: auto;
+   
+}
+
+.inputErrord{
+    color: red;
+    padding: 2%;
+    padding-bottom: 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .logForms{
+        margin-left: 1%;
+        margin-top: 10%;
+        border:1px solid rgb(0, 102, 255); 
+        width: 98%;
+       
+    }
+    .logHead{
+
+        font-size: 130%;       
+        padding-bottom: 1%;
+    }
+    .navBarHead{
+
+        font-size: 70%;
+       font-weight: 600;  
+      
+       
+    }
+    .navLogo{
+        width: 12%;
+        height: auto;
+       
+    }
+
+}

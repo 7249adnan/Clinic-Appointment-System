@@ -1,0 +1,170 @@
+.updateForm{
+
+    border: 6px solid rgb(59, 125, 247);
+    border-radius: 20px;
+    /* background-color: rgb(241, 240, 240); */
+    margin-top: 3%;
+    padding: 2% !important;   
+    width: 80% !important ; 
+    padding-bottom: 0% !important;  
+    
+
+}
+
+hr {
+    width: 100%; /* Set the width */
+    height: 3px; /* Set the height */
+   
+    background-color: rgb(0, 0, 0); /* Set the color */
+    border: none; /* Remove the default border */
+}
+
+.timeError{
+  color: red;
+  margin-top: 3%;
+  font-weight: 600;
+}
+
+.formHead{
+    font-size: 180%;
+    font-weight: 500;
+    
+    text-align: center;
+    margin-bottom: 2%;
+}
+
+.subformHead{
+
+    font-size: 150%;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: left;
+    margin-bottom: 2%;
+   
+    
+}
+
+.labelfont {
+    font-size: 110%;
+    font-weight: 500;
+    padding-left: 2%;
+    padding-top: 2%;
+   
+  }
+  
+  .labelfontP {
+      font-size: 110%;
+      font-weight: 500;
+      padding-left: 3%;
+      padding-top:7%;
+      
+  
+    }
+  
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 999;
+  }
+  
+  .modaltitle {
+    padding-left: 33%;
+  }
+  
+  .modaltitleP {
+      padding-left: 20%;
+    }
+    
+  
+  .controlBtn {
+    text-align: center;
+    padding: 5%;
+  }
+  
+  .startTime{
+    font-weight: 600;
+    
+    
+  }
+
+  /* styles.css */
+
+table {
+  width: 90%;
+  border-collapse: collapse;
+  margin-top: 5%;
+  margin-left: 2%;
+}
+
+
+
+.searchBar{
+
+  margin-top: 3%;
+  margin-left: 25%;
+  margin-bottom: -2%;
+
+  /* border: 1px solid rgb(0, 0, 0); */
+ 
+  padding: 1%;
+  background-color: #edeef3;
+  width: 50%;
+}
+
+.data {
+  border: 1px solid #000000; /* Border color */
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+}
+
+th {
+  background-color: #3482db; /* Header background color */
+  color: #ffffff; /* Header text color */
+}
+
+tr:nth-child(even) {
+  background-color: #d3d1d1;
+}
+
+/* Optional: Hover effect */
+tr:hover {
+  background-color: #ee9b02; /* Light blue on hover */
+  color: white;
+  font-weight: 600;
+  
+}
+
+
+@media (max-width: 767px) {
+ 
+  table {
+    width: 95%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    margin-left: 1%;
+  }
+  .data {
+    border: 1px solid #000000; /* Border color */
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+  }
+
+  .searchBar{
+
+    margin-top: 10%;
+    margin-left: 2%;
+    
+    margin-bottom: -2%;
+  
+    /* border: 1px solid rgb(0, 0, 0); */
+   
+    padding: 1%;
+    padding-top: 5%;
+    background-color: #edeef3;
+    width: 98%;
+  }
+
+}
