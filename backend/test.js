@@ -56,7 +56,7 @@ async function getUserByEmail(email) {
 //updateUser(1,{gender:'female',zipcode:400062});
 //deleteUser("abc@gmail.com");
 //getUsers();
-getUserByEmail('abc@gmail.com3');
+//getUserByEmail('abc@gmail.com3');
 
 
 

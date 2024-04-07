@@ -94,9 +94,8 @@ const AppointmentInfo = sequelize.define("AppointmentInfo", {
   startTime: { type: DataTypes.TIME, allowNull: false },
   status: { type: DataTypes.STRING, allowNull: false },
   totalFees: { type: DataTypes.INTEGER, allowNull: false },
-  advancedFees: { type: DataTypes.INTEGER },
-  remainingFees: { type: DataTypes.INTEGER },
-  paidFees: { type: DataTypes.INTEGER },
+  advancedFees: { type: DataTypes.INTEGER,defaultValue:0 }, 
+  paidFees: { type: DataTypes.BOOLEAN },
 });
 
 // Define association between DoctorInfo and  AppointmentInfo
@@ -107,7 +106,10 @@ AppointmentInfo.belongsTo(User, { foreignKey: "patientId" });
 DoctorInfo.hasOne(AppointmentInfo, { foreignKey: "doctorId" });
 AppointmentInfo.belongsTo(DoctorInfo, { foreignKey: "doctorId" });
 
-sequelize.sync();
+sequelize.sync(); 
+//sequelize.sync({ force: true }); // When to start new 
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is Listining on PORT : ${PORT}`);
@@ -893,8 +895,7 @@ app.post("/createAppointment", (req, res) => {
     p.status,
     p.totalFees,
     p.advancedFees,
-    p.remainingFees,
-    p.paidFees
+    false    
   )
     .then((data) => {
       console.log("AppointMent inserted successfully  :" + data);
@@ -913,8 +914,7 @@ async function insertAppointment(
   startTime,
   status,
   totalFees,
-  advancedFees,
-  remainingFees,
+  advancedFees,  
   paidFees
 ) {
   try {
@@ -926,8 +926,7 @@ async function insertAppointment(
       startTime,
       status,
       totalFees,
-      advancedFees,
-      remainingFees,
+      advancedFees,     
       paidFees,
     });
     // console.log("Appointment Created :", Appointment.toJSON());
@@ -984,7 +983,7 @@ app.post("/checkDoctorHoliday", (req, res) => {
       res.json(val);
     })
     .catch((error) => {
-      console.error("Error Deleting Doctor:", error);
+      console.error("Error Check Doctor Holiday:", error);
     });
 
   console.log(req.body.deleteID);
@@ -1041,6 +1040,7 @@ app.post("/checkDoctorAvailabilityTime", (req, res) => {
 });
 
 async function getDoctorAvailabilityTime(myDate, myDoctorId) {
+
   try {
     const doctorAvail = await AvailableInfo.findOne({
       where: { doctorId: myDoctorId },
@@ -1048,7 +1048,8 @@ async function getDoctorAvailabilityTime(myDate, myDoctorId) {
 
     const doctorInfo = await DoctorInfo.findOne({ where: { id: myDoctorId } });
 
-    var data = sortAvailTime(myDate, doctorAvail, doctorInfo.slotTime);
+
+    var data = sortAvailTime(myDate, doctorAvail, doctorInfo.slotTime);    
     return data;
   } catch (error) {
     console.error("Error finding Doctor :", error);
@@ -1067,7 +1068,6 @@ function sortAvailTime(myDate, doctorAvail, myslotTime) {
     day: "",
     slotTime: myslotTime,
   };
-
   if (dayIndex == 1 && doctorAvail.isMon == true) {
     availTime.startTime = doctorAvail.monStart;
     availTime.endTime = doctorAvail.monEnd;
@@ -1092,7 +1092,7 @@ function sortAvailTime(myDate, doctorAvail, myslotTime) {
     availTime.startTime = doctorAvail.satStart;
     availTime.endTime = doctorAvail.satEnd;
     availTime.day = "Saturday";
-  } else if (dayIndex == 7 && doctorAvail.isSun == true) {
+  } else if (dayIndex == 0 && doctorAvail.isSun == true) {
     availTime.startTime = doctorAvail.sunStart;
     availTime.endTime = doctorAvail.sunEnd;
     availTime.day = "Sunday";
@@ -1101,4 +1101,69 @@ function sortAvailTime(myDate, doctorAvail, myslotTime) {
   }
 
   return availTime;
+}
+
+
+app.post("/updateApptFees", (req, res) => {
+  var p = req.body;
+
+  const appt = updateApptFees(p.id, {
+    status: p.status,
+    totalFees: p.totalFees,
+    advancedFees: p.advancedFees,
+    paidFees: p.paidFees,    
+  })
+    .then(() => {
+      console.log("Appointment Updated  successfully ");
+      res.send("updatedOK");
+    })
+    .catch((error) => {
+      console.error("Error updating Appt :", error);
+    });
+
+  console.log(p);
+});
+
+async function updateApptFees(id, newdata) {
+  try {
+    const Appt = await AppointmentInfo.update(newdata, {
+      where: { id },
+      returning: true,
+    });
+    console.log("Appt updated:" + Appt);
+  } catch (error) {
+    console.error("Error Updating Appt:", error);
+
+    throw error;
+  }
+}
+
+app.post("/deleteAppointment", (req, res) => {
+  var rowAffected = deleteAppointment(req.body.deleteID)
+    .then((rowAffected) => {
+      console.log("Appointment Deleted successfully :: " + rowAffected);
+      res.send("yes");
+    })
+    .catch((error) => {
+      console.error("Error Deleting Appointment:", error);
+    });
+
+  console.log(req.body.deleteID);
+});
+
+async function deleteAppointment(selectedID) {
+  try {
+    const rowsAffected = await AppointmentInfo.destroy({
+      where: { id: selectedID },
+    })
+      .then((rowsDeleted) => {
+        console.log(`Deleted ${rowsDeleted} row(s)`);
+      })
+      .catch((error) => {
+        console.error("Error deleting row:", error);
+      });
+  } catch (error) {
+    console.error("Error Deleting Appointment : ", error);
+    throw error;
+  }
 }

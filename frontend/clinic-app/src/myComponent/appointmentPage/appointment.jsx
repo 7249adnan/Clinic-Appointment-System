@@ -10,32 +10,33 @@ import { Modal } from "react-bootstrap";
 
 import { useNavigate } from "react-router-dom";
 import ShowAppointment from "./appointmentCURD/ShowAppointment";
+import DeleteAppointment from "./appointmentCURD/DeleteAppointment";
 
 function Appointment() {
-  const [createModalShow, setCreateModalShow] = useState(false);
+  // const [createModalShow, setCreateModalShow] = useState(false);
   const [selectedID, setSelectedID] = useState(null);
   const [showError, setShowError] = useState(false);
 
   const handleUpdateCloseError = () => setShowError(false);
   const handleUpdateShowError = () => setShowError(true);
 
-  const createRef = useRef(null);
+  // const createRef = useRef(null);
   const showRef = useRef(null);
   const deleteRef = useRef(null);
 
-  if (createRef.current) {
-    createRef.current.createDoctor();
-  }
+  // if (createRef.current) {
+  //   createRef.current.createDoctor();
+  // }
 
-  const ReloadDoctorData = () => {
+  const reloadAppointmentData = () => {
     if (showRef.current) {
-      showRef.current.LoadData();
+      showRef.current.getAppointment();   
     }
   };
 
-  function deleteDoctor() {
+  function deleteAppointment() {
     if (deleteRef.current) {
-      deleteRef.current.deleteDoctor(selectedID);
+      deleteRef.current.deleteAppointment(selectedID);
     }
   }
 
@@ -48,11 +49,11 @@ function Appointment() {
     });
   }
 
-  function gotoUpdateDoctor() {
+  function gotoUpdateAppointment() {
     if (selectedID == null) {
       handleUpdateShowError();
     } else {
-      navigate("/doctor/updateDoctor", {
+      navigate("/appointment/updateappointment", {
         replace: true,
         state: { ID: selectedID },
       });
@@ -61,6 +62,7 @@ function Appointment() {
 
   function setId(id) {
     setSelectedID(id);
+    console.log("APPT SEL ID : "+id);
   }
 
   return (
@@ -73,7 +75,7 @@ function Appointment() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Select Doctor Row First To Which Will Update !!!{" "}
+         <b style={{fontSize:"110%"}}> Select Doctor Row First To Which Will Update !!!{" "} </b> 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="success" onClick={handleUpdateCloseError}>
@@ -87,7 +89,7 @@ function Appointment() {
         onShow={() => setCreateModalShow(true)}
         ref={createRef}
         onHide={() => setCreateModalShow(false)}
-        loadDoctors={ReloadDoctorData}
+        loadDoctors={reloadAppointmentData}
       /> */}
       <Container>
         {/* Single row for desktop */}
@@ -133,7 +135,7 @@ function Appointment() {
               variant="success"
               size="lg"
               className="mx-2"
-              onClick={gotoUpdateDoctor}
+              onClick={gotoUpdateAppointment}
             >
               {" "}
               Update{" "}
@@ -142,7 +144,7 @@ function Appointment() {
               variant="danger"
               size="lg"
               className="mx-2"
-              onClick={deleteDoctor}
+              onClick={deleteAppointment}
             >
               {" "}
               Delete{" "}
@@ -151,7 +153,7 @@ function Appointment() {
               variant="secondary"
               size="lg"
               className="mx-2"
-              onClick={ReloadDoctorData}
+              onClick={reloadAppointmentData}
             >
               {" "}
               Reload{" "}
@@ -184,7 +186,7 @@ function Appointment() {
             <Button
               variant="success"
               className="w-75 mx-4"
-              onClick={gotoUpdateDoctor}
+              onClick={gotoUpdateAppointment}
             >
               Update{" "}
             </Button>
@@ -193,14 +195,14 @@ function Appointment() {
             <Button
               variant="danger"
               className="w-75 mb-2"
-              onClick={deleteDoctor}
+              onClick={deleteAppointment}
             >
               Delete
             </Button>
             <Button
               variant="secondary"
               className="w-75"
-              onClick={ReloadDoctorData}
+              onClick={reloadAppointmentData}
             >
               Reload
             </Button>
@@ -209,11 +211,13 @@ function Appointment() {
       </Container>
 
       <Container >
-        <ShowAppointment />
+        <ShowAppointment ref={showRef} setIdIndex={setId} />
       </Container>
 
+      <DeleteAppointment  ref={deleteRef} loadAppointment={reloadAppointmentData} />
+
       {/* <ShowDoctor ref={showRef} setIdIndex={setId} /> */}
-      {/* <DeleteDoctor ref={deleteRef} loadDoctors={ReloadDoctorData} /> */}
+      {/* <DeleteDoctor ref={deleteRef} loadDoctors={reloadAppointmentData} /> */}
     </>
   );
 }

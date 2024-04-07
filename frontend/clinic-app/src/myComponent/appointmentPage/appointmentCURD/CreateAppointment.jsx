@@ -272,6 +272,24 @@ function CreateAppointment() {
     }
   };
 
+  function setRemainingFees() {
+    var A = 0,
+      B = 0;
+     
+
+    if (formData.totalFees !== "" || formData.totalFees!==NaN ) {
+      A = parseInt(formData.totalFees);
+    }
+    if (formData.advancedFees !== "") {
+      B = parseInt(formData.advancedFees);
+    }   
+    
+    setFormData({
+      ...formData,
+      remainingFees: (A - B ),
+    });
+  }
+
   return (
     <>
       <div>
@@ -729,6 +747,7 @@ function CreateAppointment() {
                 </div>
               </Form.Group>
             </Col>
+           
           </Row>
 
           <Row>
@@ -762,10 +781,11 @@ function CreateAppointment() {
                   <Form.Control
                     type="number"
                     placeholder="400 Rs"
-                    step={50}
+                  
                     name="totalFees"
                     minLength={10}
                     value={formData.totalFees}
+                    onKeyUp={setRemainingFees}
                     onChange={handleChange}
                   />
                 </div>
@@ -781,16 +801,15 @@ function CreateAppointment() {
                     type="number"
                     placeholder="200 Rs"
                     name="advancedFees"
-                    step={50}
+                   
                     minLength={10}
                     value={formData.advancedFees}
+                    onKeyUp={setRemainingFees}
                     onChange={handleChange}
                   />
                 </div>
               </Form.Group>
             </Col>
-          </Row>
-          <Row>
             <Col>
               <Form.Group controlId="formMobile">
                 <div className="formgroup2">
@@ -802,6 +821,7 @@ function CreateAppointment() {
                     placeholder="400 Rs"
                     name="remainingFees"
                     step={50}
+                    disabled
                     minLength={10}
                     value={formData.remainingFees}
                     onChange={handleChange}
@@ -809,24 +829,9 @@ function CreateAppointment() {
                 </div>
               </Form.Group>
             </Col>
-            <Col>
-              <Form.Group controlId="formMobile">
-                <div className="formgroup2">
-                  <Form.Label className="labelfont">Paid Fees : </Form.Label>
-                  <Form.Control
-                    type="number"
-                    placeholder="200 Rs"
-                    name="paidFees"
-                    step={50}
-                    minLength={10}
-                    value={formData.paidFees}
-                    onChange={handleChange}
-                  />
-                </div>
-              </Form.Group>
-            </Col>
-            <Col></Col>
+            
           </Row>
+          
           <br />
           <hr />
 

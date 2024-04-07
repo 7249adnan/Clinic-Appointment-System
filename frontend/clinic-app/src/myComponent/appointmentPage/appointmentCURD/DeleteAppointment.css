@@ -1,0 +1,7 @@
+.fixed-top {
+    position: fixed;
+    top: 9%;
+    width: 100%;
+    z-index: 999;
+   
+}

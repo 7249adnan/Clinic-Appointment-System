@@ -1,23 +1,31 @@
 import "./ShowAppointment.css";
-import React, { useState, useEffect } from "react";
-import { Button, Container, Row, Col, Form, FormCheck } from "react-bootstrap";
+import React, { useState, useEffect ,forwardRef,useImperativeHandle} from "react";
+import {
+  Button,
+  Container,
+  Row,
+  Col,
+  Form,
+  FormCheck,
+  Alert,
+} from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Dropdown } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 
-const ShowAppointment = (props) => {
-  const [timeSlots, setTimeSlots] = useState([]);
+const ShowAppointment  = forwardRef((props, ref) => {
   const [DateText, setDateText] = useState("");
-  const [previousKey, setPreviousKey] = useState(null);
+
   const [selectedValue, setSelectedValue] = useState("number");
   const [errorMessage, SetErrorMessage] = useState("");
   const [searchText, setSearchText] = useState("");
   const [doctorNameText, setDoctorNameText] = useState("");
 
-  const [currentDate, setCurrentDate] = useState(new Date());
-
   const [isMobile, setIsMobile] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
   const [doctorSelectedID, setDoctorSelectedID] = useState(null);
   const [chooseDoctorModalShow, setChooseDoctorModalShow] = useState(false);
@@ -27,7 +35,6 @@ const ShowAppointment = (props) => {
     setChooseDoctorModalShow(true);
   };
 
-  const [selectedApptValue, setSelectedApptValue] = useState(0);
   const [chooseUpdateApptModalShow, setChooseUpdateApptModalShow] =
     useState(false);
   const handleChooseUpdateApptModalClose = () =>
@@ -38,13 +45,8 @@ const ShowAppointment = (props) => {
 
   const [doctorFormData, setDoctorFormData] = useState({});
 
-  const [doctorTimes, setDoctorTimes] = useState({
-    slotTime: "",
-    startTime: "",
-    endTime: "",
-  });
-
   const [apptUpdateFees, setApptUpdateFees] = useState({
+    id: "",
     status: "",
     totalFees: "",
     advancedFees: "",
@@ -61,14 +63,11 @@ const ShowAppointment = (props) => {
       ...apptUpdateFees,
       [name]: value,
     });
-
-    // setRemainingFees();
   };
 
   function setRemainingFees() {
     var A = 0,
-      B = 0,
-      C = 0;
+      B = 0;
 
     if (apptUpdateFees.totalFees !== "") {
       A = parseInt(apptUpdateFees.totalFees);
@@ -76,13 +75,9 @@ const ShowAppointment = (props) => {
     if (apptUpdateFees.advancedFees !== "") {
       B = parseInt(apptUpdateFees.advancedFees);
     }
-    if (apptUpdateFees.paidFees !== "") {
-      C = parseInt(apptUpdateFees.paidFees);
-    }
-
     setApptUpdateFees({
       ...apptUpdateFees,
-      remainingFees: (A - B - C),
+      remainingFees: A - B,
     });
   }
 
@@ -94,14 +89,21 @@ const ShowAppointment = (props) => {
   const handleCloseZero = () => setShowZero(false);
   const handleShowZero = () => setShowZero(true);
 
-  const [bookedSlot, setBookedSlot] = useState(null);
-
   const [selectedID, setSelectedID] = useState(null);
   const handleIDChange = (event) => {
     setSelectedID(event.target.value);
+    props.setIdIndex(event.target.value);
   };
 
-  var [tableRows, setTableRows] = useState();
+  const handleApptCheckBox = (e) => {
+    const { name, checked } = e.target;
+    setApptUpdateFees({ ...apptUpdateFees, [name]: checked });
+  };
+
+  useImperativeHandle(ref, () => ({
+    getAppointment
+  }));
+
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -109,7 +111,6 @@ const ShowAppointment = (props) => {
 
     if (DateText) {
       getAppointment();
-      console.log(DateText);
     } else {
       setTodayDate();
     }
@@ -131,7 +132,7 @@ const ShowAppointment = (props) => {
   function setTodayDate() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // January is 0
+    const month = String(today.getMonth() + 1).padStart(2, "0"); 
     const day = String(today.getDate()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}`;
     setDateText(formattedDate);
@@ -187,27 +188,11 @@ const ShowAppointment = (props) => {
         num = num + 1;
         currentTime = addMinutes(currentTime, mySlotTime);
       }
-
-      setTimeSlots(slots);
     }
   }
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
-  }
-
-  function fillRow() {
-    // const filteredData = timeSlots.filter(item => item.booked === true);
-
-    setTableRows(
-      formData.map((item) => (
-        <tr className="data" key={item.id}>
-          <td className="data">{item.startDate}</td>
-          <td className="data">{item.startTime}</td>
-          <td className="data"> </td>
-        </tr>
-      ))
-    );
   }
 
   const compareTimes = (time1, time2) => {
@@ -221,12 +206,7 @@ const ShowAppointment = (props) => {
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
   };
-  const handleBlur = () => {
-    if (searchText.trim() === "") {
-      // LoadData();
-    }
-  };
-
+  
   const handleDoctorIDChange = (event) => {
     setDoctorSelectedID(event.target.value);
     localStorage.setItem("doctorId", event.target.value);
@@ -254,8 +234,6 @@ const ShowAppointment = (props) => {
       SetErrorMessage(" First Plzz Select Doctor . . . !!!");
       handleShowError();
     }
-
-    console.log("val : " + val);
   }
 
   function getAppointment() {
@@ -281,8 +259,8 @@ const ShowAppointment = (props) => {
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("in GET Appointment 33 22: ");
-          console.log(data);
+          setSelectedID(null);
+          props.setIdIndex(null);
           setFormData(data);
           setDataLoaded(true);
           checkDoctorHoliday(DateText, data);
@@ -292,8 +270,6 @@ const ShowAppointment = (props) => {
   }
 
   function checkDoctorHoliday(myDate, bookedSlot) {
-    console.log("In Check Date : " + myDate);
-
     fetch(
       process.env.REACT_APP_PROTOCOL +
         "://" +
@@ -309,7 +285,6 @@ const ShowAppointment = (props) => {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data === 1) {
           getDoctorAvailability(myDate, bookedSlot);
         } else {
@@ -337,8 +312,6 @@ const ShowAppointment = (props) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.doctorPresent === true) {
-          setDoctorTimes(data);
-          console.log(data);
           convertToTimeSlots(
             data.startTime,
             data.endTime,
@@ -347,7 +320,7 @@ const ShowAppointment = (props) => {
           );
         } else {
           SetErrorMessage(
-            "  Doctor is Not Available , he is Absent on This Day"
+            "  Doctor is Not Available , he is Absent on This Day "
           );
           handleShowError();
         }
@@ -374,7 +347,6 @@ const ShowAppointment = (props) => {
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           setDoctorFormData(data);
 
           if (isEmpty(data)) {
@@ -405,78 +377,6 @@ const ShowAppointment = (props) => {
       .padStart(2, "0")} ${meridiem}`;
   };
 
-  // Function to handle clicking on a time slot
-  const handleTimeSlotClick = (index) => {
-    const updatedSlots = [...timeSlots];
-
-    if (previousKey === null) {
-      setPreviousKey(index);
-      setTimeSlots(updatedSlots);
-    } else {
-      updatedSlots[previousKey].isNewSlot = null;
-      setPreviousKey(index);
-      setTimeSlots(updatedSlots); // try to select only one button yeellow at a time
-    }
-
-    if (updatedSlots[index].isNewSlot === true) {
-      updatedSlots[index].isNewSlot = null;
-    } else {
-      updatedSlots[index].isNewSlot = true;
-    }
-
-    setBookedSlot({
-      ...bookedSlot,
-      hour: updatedSlots[index].hour,
-      minutes: updatedSlots[index].minute,
-      date: DateText,
-    });
-
-    setTimeSlots(updatedSlots);
-  };
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "long" });
-    const year = date.getFullYear();
-
-    // Adding suffix to the day
-    let suffix = "";
-    if (day === 1 || day === 21 || day === 31) {
-      suffix = "st";
-    } else if (day === 2 || day === 22) {
-      suffix = "nd";
-    } else if (day === 3 || day === 23) {
-      suffix = "rd";
-    } else {
-      suffix = "th";
-    }
-
-    // Add suffix to the day
-    return `${day}${suffix} ${month} ${year}`;
-  }
-
-  function handleBookedSlot() {
-    if (bookedSlot === null) {
-      SetErrorMessage(" Selected Slot First");
-      handleShowError();
-    } else {
-      console.log(timeSlots);
-
-      // var time = { hour: bookedSlot.hour, minute: bookedSlot.minutes };
-      // var ft = formatTime(time);
-      // var fd = formatDate(DateText);
-      // var Booking = {
-      //   Time: bookedSlot.hour + ":" + bookedSlot.minutes + ":00",
-      //   timeString: ft,
-      //   dateString: fd,
-      //   Date: DateText,
-      // };
-      //   props.onSlotBook(Booking);
-      //   props.onHide();
-    }
-  }
-
   function setFormatDate(date) {
     const today = new Date(date);
     const year = today.getFullYear();
@@ -485,14 +385,12 @@ const ShowAppointment = (props) => {
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
   }
-
-  // const handlePreviousClick = async() => {
-  //   const previousDate = new Date(DateText);
-  //   previousDate.setDate(previousDate.getDate() - 1);
-  //   setDateText(setFormatDate(previousDate));
-  //   getAppointment();
-
-  // };
+  const handleShowMessage = () => {
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 2000); // Hide the message after 2 seconds
+  };
 
   const handlePreviousClick = () => {
     const previousDate = new Date(DateText);
@@ -504,26 +402,67 @@ const ShowAppointment = (props) => {
     const previousDate = new Date(DateText); // Create a copy of the current date
     previousDate.setDate(previousDate.getDate() + 1); // Subtract one day
     setDateText(setFormatDate(previousDate)); // Update the current date state
-    console.log(setFormatDate(previousDate));
-    getAppointment();
   };
 
   function updateApptFees(event) {
-    setSelectedApptValue(event.target.value);
     const key = event.target.value;
+
     setApptUpdateFees({
       ...apptUpdateFees,
+      id: formData[key].id,
       status: formData[key].status,
       advancedFees: formData[key].advancedFees,
       totalFees: formData[key].totalFees,
-      remainingFees: formData[key].remainingFees,
+      remainingFees: formData[key].totalFees - formData[key].advancedFees,
       paidFees: formData[key].paidFees,
     });
     handleChooseUpdateApptModalShow();
   }
 
+  function handleApptUpdateSubmit(e) {
+    e.preventDefault();
+
+    if (
+      apptUpdateFees.paidFees === false &&
+      apptUpdateFees.status === "Closed"
+    ) {
+      SetErrorMessage(
+        " Status Only can Closed if Patient has Paid All remaining Fees"
+      );
+      handleShowError();
+    } else {
+      fetch(
+        process.env.REACT_APP_PROTOCOL +
+          "://" +
+          process.env.REACT_APP_BASE_URL +
+          ":" +
+          process.env.REACT_APP_PORT +
+          "/updateApptFees",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(apptUpdateFees),
+        }
+      )
+        .then((response) => response.text())
+        .then((data) => {
+          if (data === "updatedOK") {
+            getAppointment();
+            setAlertMessage(" Appointment Updated SuccessFully");
+            handleShowMessage();
+            handleChooseUpdateApptModalClose();
+          }
+        })
+        .catch((error) => console.error(error));
+    }
+  }
+
   return (
     <div className="showForm">
+      <Alert className="fixed-top" show={showMessage} variant="success">
+        {alertMessage}
+      </Alert>
+
       <div>
         <Modal show={showError} onHide={handleCloseError}>
           <Modal.Header closeButton>
@@ -592,7 +531,7 @@ const ShowAppointment = (props) => {
                       aria-label="Username"
                       aria-describedby="basic-addon1"
                       onChange={handleSearchChange}
-                      onBlur={handleBlur}
+                     
                     />
 
                     <Dropdown onSelect={handleSelect}>
@@ -695,7 +634,7 @@ const ShowAppointment = (props) => {
         className="d-none d-md-block"
         show={chooseUpdateApptModalShow}
         onHide={handleChooseUpdateApptModalClose}
-        size="xl"
+        size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -707,7 +646,7 @@ const ShowAppointment = (props) => {
 
         <Modal.Body>
           <Container>
-            <Form>
+            <Form onSubmit={handleApptUpdateSubmit}>
               <Row>
                 <Col>
                   <Form.Group controlId="Specialist">
@@ -744,6 +683,7 @@ const ShowAppointment = (props) => {
                         step={50}
                         name="totalFees"
                         minLength={10}
+                        required
                         value={apptUpdateFees.totalFees}
                         onChange={handleChange}
                         onKeyUp={setRemainingFees}
@@ -793,25 +733,24 @@ const ShowAppointment = (props) => {
                   </Form.Group>
                 </Col>
                 <Col>
-                  <Form.Group controlId="formMobile">
+                  <Form.Group
+                    style={{ paddingTop: "12%" }}
+                    controlId="formMobile"
+                  >
                     <div className="formgroup2">
-                      <Form.Label className="labelfont">
-                        Paid Fees :{" "}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="200 Rs"
+                      <Form.Check
+                        type="checkbox"
+                        label=" Paid Remaining Fees"
+                        id="exampleCheckbox"
                         name="paidFees"
-                        step={50}
-                        minLength={10}
-                        value={apptUpdateFees.paidFees}
-                        onChange={handleChange}
-                        onKeyUp={setRemainingFees}
+                        className="labelfont"
+                        onChange={handleApptCheckBox}
+                        checked={apptUpdateFees.paidFees}
                       />
                     </div>
                   </Form.Group>
                 </Col>
-                <Col></Col>
+                
               </Row>
 
               <br />
@@ -820,7 +759,7 @@ const ShowAppointment = (props) => {
               <Row>
                 <Col className="controlBtn">
                   {" "}
-                  <Button variant="primary" size="lg" onClick={setDoctorName}>
+                  <Button variant="primary" size="lg" type="submit">
                     Update Fees
                   </Button>{" "}
                   &nbsp;&nbsp;
@@ -905,7 +844,11 @@ const ShowAppointment = (props) => {
         </Row>
         <Row>
           <Col className="paggingButton">
-            <Button onClick={handlePreviousClick} variant="secondary">
+            <Button
+              onClick={handlePreviousClick}
+              disabled={doctorSelectedID === null}
+              variant="secondary"
+            >
               {" "}
               <b>
                 {" "}
@@ -923,12 +866,17 @@ const ShowAppointment = (props) => {
             <Button
               variant="warning"
               onClick={setTodayDate}
+              disabled={doctorSelectedID === null}
               style={{ margin: "0px 10px 0px 10px" }}
             >
               {" "}
               <b>Today </b>
             </Button>
-            <Button onClick={handleNextClick} variant="secondary">
+            <Button
+              onClick={handleNextClick}
+              disabled={doctorSelectedID === null}
+              variant="secondary"
+            >
               {" "}
               <b>
                 {" "}
@@ -980,7 +928,10 @@ const ShowAppointment = (props) => {
             </table>
           </div>
         ) : (
-          <div className="pc-content">
+          <div
+            style={{ height: "350px", overflow: "auto" }}
+            className="pc-content"
+          >
             <table className="tableA" hidden={!dataLoaded}>
               <thead>
                 <tr>
@@ -996,6 +947,7 @@ const ShowAppointment = (props) => {
                   <th className="data"> Update</th>
                 </tr>
               </thead>
+
               <tbody>
                 {/* Using Object.keys() to get an array of keys */}
                 {Object.keys(formData).map((key) => (
@@ -1021,14 +973,19 @@ const ShowAppointment = (props) => {
                     <td className="data">{formData[key].User.number}</td>
                     <td className="data"> {formData[key].totalFees} </td>
                     <td className="data"> {formData[key].advancedFees}</td>
-                    <td className="data"> {formData[key].remainingFees}</td>
-                    <td className="data"> {formData[key].paidFees}</td>
+                    <td className="data">
+                      {" "}
+                      {formData[key].totalFees - formData[key].advancedFees}
+                    </td>
+                    <td className="data">
+                      {" "}
+                      {formData[key].paidFees ? "YES" : "NO"}
+                    </td>
 
                     <td className="data">
                       {" "}
                       <Button
                         variant="success"
-                        // onClick={handleChooseUpdateApptModalShow}
                         onClick={updateApptFees}
                         value={key}
                         size="sm"
@@ -1046,6 +1003,6 @@ const ShowAppointment = (props) => {
       </div>
     </div>
   );
-};
+});
 
 export default ShowAppointment;

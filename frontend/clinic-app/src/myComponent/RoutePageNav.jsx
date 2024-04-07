@@ -25,6 +25,7 @@ import {Route, Link, Routes } from "react-router-dom";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UpdateAppointment from "./appointmentPage/appointmentCURD/UpdateAppointment";
 
 function RoutePageNav(props) {
   const [showNav, setShowNav] = useState(false);
@@ -73,7 +74,7 @@ function RoutePageNav(props) {
   const { location } = props;
   return (
     <div >
-      <Navbar collapseOnSelect expand="lg" bg="primary" data-bs-theme="dark">
+      <Navbar sticky="top" collapseOnSelect expand="lg" bg="primary" data-bs-theme="dark">
         <Container fluid>
           <Navbar.Brand href="/home" style={{ fontSize: "150%" }}>
             <FontAwesomeIcon
@@ -172,6 +173,8 @@ function RoutePageNav(props) {
         <Route exact path="/doctor/updateDoctor" element={<UpdateDoctor/>} />
         <Route exact path="/appointment" element={<Appointment/>} />
         <Route exact path="/appointment/createappointment" element={<CreateAppointment/>} />
+        <Route exact path="/appointment/updateappointment" element={<UpdateAppointment/>} />
+        
         
 
         
